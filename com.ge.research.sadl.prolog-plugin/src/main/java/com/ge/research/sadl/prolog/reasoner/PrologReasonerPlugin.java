@@ -286,7 +286,7 @@ public class PrologReasonerPlugin extends Reasoner {
 		String[] querySplit = askQuery.split("\\s+");
 		List<String> vars = new ArrayList<String>();
 		boolean varStart = false;
-		for (int index=0; index<querySplit.length; index++){
+		for (int index=0; index<querySplit.length; index++) {
 			if (querySplit[index].toLowerCase().equals("select")){
 				varStart = true;
 				continue;
@@ -299,7 +299,7 @@ public class PrologReasonerPlugin extends Reasoner {
 			
 			if (varStart) {
 				String[] varSplit = querySplit[index].split(",+");
-				for (int i=0; i<varSplit.length; ++i){
+				for (int i=0; i<varSplit.length; ++i) {
 					vars.add(varSplit[i]);
 				}
 			}
@@ -337,7 +337,8 @@ public class PrologReasonerPlugin extends Reasoner {
 		}
 		if (collectTimingInfo) {
 			long t2 = System.currentTimeMillis();
-			timingInfo.add(new ReasonerTiming(TIMING_QUERYEXEC, "execute query", t1 - t0));
+			timingInfo.add(new ReasonerTiming(TIMING_QUERYEXEC, "execute query", t2 - t1));
+//			timingInfo.add(new ReasonerTiming(TIMING_QUERYEXEC, "execute query", t1 - t0));
 		}
 		//List<Var> plvars = new ArrayList<Var>();
 		//if (solution.isSuccess())
@@ -391,7 +392,6 @@ public class PrologReasonerPlugin extends Reasoner {
 
 	@Override
 	public boolean configure(ConfigurationItem configItem) {
-		// TODO Auto-generated method stub
 		
 		for (NameValuePair pair: configItem.getNameValuePairs()){
 				if (pair.getName().equals("plImport"))
