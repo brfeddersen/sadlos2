@@ -520,6 +520,7 @@ public class PrologTranslatorPlugin implements ITranslator {
 	 * @return
 	 * @throws TranslationException
 	 */
+		@SuppressWarnings("unchecked")
 		private String graphPatternElementToPrologRuleString(GraphPatternElement gpe, RulePart rulePart) throws TranslationException {
 			StringBuilder sb = null;
 			if (gpe instanceof TripleElement) {
@@ -1136,6 +1137,7 @@ public class PrologTranslatorPlugin implements ITranslator {
 		return queryInTranslation ;
 	}
 
+	@SuppressWarnings("unused")
 	private void setQueryInTranslation(Query queryInTranslation) {
 		this.queryInTranslation = queryInTranslation;
 	}
