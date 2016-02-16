@@ -34,9 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -75,7 +73,6 @@ import com.ge.research.sadl.reasoner.ConfigurationItem;
 import com.ge.research.sadl.reasoner.ConfigurationManagerFactory;
 import com.ge.research.sadl.reasoner.ConfigurationOption;
 import com.ge.research.sadl.reasoner.IConfigurationManager;
-import com.ge.research.sadl.reasoner.IConfigurationManagerForEditing;
 import com.ge.research.sadl.reasoner.ITranslator;
 import com.ge.research.sadl.reasoner.InvalidDerivationException;
 import com.ge.research.sadl.reasoner.InvalidNameException;
@@ -145,7 +142,6 @@ import com.hp.hpl.jena.reasoner.rulesys.Rule.ParserException;
 import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.Product;
 import com.hp.hpl.jena.shared.RulesetNotFoundException;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -239,8 +235,10 @@ public class JenaReasonerPlugin extends Reasoner{
 	protected boolean newInputFlag = false;
 	protected boolean initialized = false;
 
-	private boolean explanationsEnabled;
+	@SuppressWarnings("unused")
+	private boolean explanationsEnabled = false;
 	
+	@SuppressWarnings("unused")
 	private String luceneIndexerClass = null;
 	
 //	private FileAppender traceAppender = null;
@@ -315,6 +313,7 @@ public class JenaReasonerPlugin extends Reasoner{
 		return initializeReasoner(folderName, modelName, null, _repoType);		
 	}
 	
+	@SuppressWarnings("unused")
 	public GenericRuleReasoner getReasonerOnlyWhenNeeded() throws ConfigurationException {
 		if (reasoner != null) {
 			return reasoner;
@@ -1364,6 +1363,7 @@ public class JenaReasonerPlugin extends Reasoner{
 				else if (premises[pi] instanceof Functor) {
 					String functorName = ((Functor)premises[pi]).getName();
 					com.hp.hpl.jena.graph.Node[] args = ((Functor)premises[pi]).getArgs();
+					@SuppressWarnings("unused")
 					String functorMsg = functorName + "(";
 					for (int ai = 0; args != null && ai < args.length; ai++) {
 						functorMsg += nodeShortString(args[ai]) + (ai < (args.length - 1) ? ", " : "");
@@ -1635,6 +1635,7 @@ public class JenaReasonerPlugin extends Reasoner{
 		return tripleStr;
 	}
 
+	@SuppressWarnings("unused")
 	protected ResultSet processRuleQuery(com.hp.hpl.jena.reasoner.rulesys.Rule rule, List<String> premisesAsStrings, String q) throws QueryParseException, QueryCancelledException {
 		logger.debug("Explanation executing query: " + q);
 		ResultSet rs = ask(q);
