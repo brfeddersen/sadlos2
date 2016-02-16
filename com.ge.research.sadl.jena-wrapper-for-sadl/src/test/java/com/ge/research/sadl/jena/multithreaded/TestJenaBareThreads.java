@@ -1,7 +1,5 @@
 package com.ge.research.sadl.jena.multithreaded;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -14,6 +12,7 @@ public class TestJenaBareThreads {
 	public void setUp() throws Exception {
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void testThreads() {
 		long timestamp = System.currentTimeMillis();
