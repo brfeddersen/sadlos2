@@ -31,7 +31,6 @@ import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
 import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
-import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
 
 public class Localname extends BaseBuiltin {
@@ -69,7 +68,7 @@ public class Localname extends BaseBuiltin {
          if (n1.isURI()) {
         	 String ln = n1.getLocalName();
              logger.debug("returning localname '" + ln + "'");
-             Node lnn = NodeFactory.createLiteral(LiteralLabelFactory.create(ln));
+             Node lnn = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(ln));
              return env.bind(args[1], lnn);
         }
          else {
