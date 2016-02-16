@@ -414,6 +414,7 @@ public class JenaTranslatorPlugin implements ITranslator {
 	}
 
 
+	@SuppressWarnings("unused")
 	public String translateQuery(OntModel model, Query query)
 			throws TranslationException, InvalidNameException {
 		boolean isEval = false;
@@ -723,6 +724,7 @@ public class JenaTranslatorPlugin implements ITranslator {
  * @return
  * @throws TranslationException
  */
+	@SuppressWarnings("unchecked")
 	private String graphPatternElementToJenaRuleString(GraphPatternElement gpe, RulePart rulePart) throws TranslationException {
 		StringBuilder sb = null;
 		if (gpe instanceof TripleElement) {
@@ -1093,6 +1095,7 @@ public class JenaTranslatorPlugin implements ITranslator {
 		return builtinName;
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean findOrAddBuiltin(String builtinName) {
 		int cnt = 0;
 		// is it known to the ConfigurationManager?
@@ -1628,6 +1631,7 @@ public class JenaTranslatorPlugin implements ITranslator {
 		return errors;
 	}
 	
+	@SuppressWarnings("unused")
 	private Map<String, NamedNode> getTypedVars(com.ge.research.sadl.model.gp.Rule rule) {
 		Map<String, NamedNode> results = getTypedVars(rule.getGivens());
 		Map<String, NamedNode> moreResults = getTypedVars(rule.getIfs());
