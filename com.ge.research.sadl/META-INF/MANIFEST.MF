@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: com.ge.research.sadl
 Bundle-Vendor: GE Research
-Bundle-Version: 2.4.0.qualifier
+Bundle-Version: 2.4.2.qualifier
 Bundle-SymbolicName: com.ge.research.sadl; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext;bundle-version="2.4.3";visibility:=reexport,
@@ -255,6 +255,7 @@ Export-Package: com.ge.research.sadl;uses:="org.eclipse.xtext,org.eclipse.xtext.
    com.hp.hpl.jena.rdf.model",
  com.hp.hpl.jena.util.iterator,
  com.hp.hpl.jena.vocabulary;uses:="com.hp.hpl.jena.ontology,com.hp.hpl.jena.graph,com.hp.hpl.jena.rdf.model",
+ junit.textui,
  org.apache.jena.atlas.web,
  org.openjena.riot,
  org.pojava.datetime,
