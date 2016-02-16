@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jena-plugin
 Bundle-SymbolicName: com.ge.research.sadl.jena-plugin;singleton:=true
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.4.2.qualifier
 Bundle-Activator: com.ge.research.sadl.jena_plugin.Activator
 Bundle-Vendor: GE Global Research
 Require-Bundle: org.eclipse.core.runtime,
- com.ge.research.sadl;bundle-version="2.2.0",
+ com.ge.research.sadl;bundle-version="2.4.2",
  org.apache.log4j
 Eclipse-RegisterBuddy: com.ge.research.sadl
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
