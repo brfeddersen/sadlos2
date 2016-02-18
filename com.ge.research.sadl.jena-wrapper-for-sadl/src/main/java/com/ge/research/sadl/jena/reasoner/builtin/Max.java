@@ -23,19 +23,15 @@
 
 package com.ge.research.sadl.jena.reasoner.builtin;
 
-import java.util.Date;
-
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
 import com.hp.hpl.jena.reasoner.rulesys.BuiltinException;
 import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.XSD;
+
 
 public class Max extends BaseBuiltin {
 	
@@ -56,7 +52,8 @@ public class Max extends BaseBuiltin {
         return argLength;
     }
     
-    private void setArgLength(int len) {
+    @SuppressWarnings("unused")
+	private void setArgLength(int len) {
     	argLength = len;
     }
 
@@ -70,7 +67,8 @@ public class Max extends BaseBuiltin {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
-    public boolean bodyCall(Node[] args, int length, RuleContext context) {
+    @SuppressWarnings("unused")
+	public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         BindingEnvironment env = context.getEnv();
         Object maxVal = null;
