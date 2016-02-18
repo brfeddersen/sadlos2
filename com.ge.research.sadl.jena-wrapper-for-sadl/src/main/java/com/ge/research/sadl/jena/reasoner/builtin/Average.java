@@ -50,7 +50,8 @@ public class Average extends BaseBuiltin {
         return argLength;
     }
     
-    private void setArgLength(int len) {
+    @SuppressWarnings("unused")
+	private void setArgLength(int len) {
     	argLength = len;
     }
 
