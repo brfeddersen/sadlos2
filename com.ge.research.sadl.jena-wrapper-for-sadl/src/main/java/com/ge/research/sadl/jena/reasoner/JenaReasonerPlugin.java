@@ -164,12 +164,12 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * 4. The configuration manager is responsible for setting up mappings, etc.
  * 
  * $Author: crapo $ 
- * $Revision: 1.18 $ Last modified on   $Date: 2015/09/22 15:00:54 $
+ * $Revision: 1.19 $ Last modified on   $Date: 2015/09/28 15:19:32 $
  */
 public class JenaReasonerPlugin extends Reasoner{
     protected static final Logger logger = LoggerFactory.getLogger(JenaReasonerPlugin.class);
 	public static String ReasonerFamily="Jena-Based";
-	public static final String version = "$Revision: 1.18 $";
+	public static final String version = "$Revision: 1.19 $";
 	private static String ReasonerCategory = "Jena";
 	public static final String pModelSpec = "pModelSpec";
 	public static final String pTimeOut = "pTimeOut";
@@ -1031,9 +1031,9 @@ public class JenaReasonerPlugin extends Reasoner{
 			startTrace();
 			QueryExecution qexec = null;		
 			com.hp.hpl.jena.query.ResultSet results = null;		
-			long t1 = System.currentTimeMillis();
 			prepareInfModel();
 			try {
+				long t1 = System.currentTimeMillis();
 	//			IndexLARQ index = null;
 	//			if (askQuery.contains("http://jena.hpl.hp.com/ARQ/property#textMatch")) {
 	//				// this query uses Lucene
@@ -2015,17 +2015,20 @@ public class JenaReasonerPlugin extends Reasoner{
 				infModel = schemaModel;
 			}
 			else {
-				synchronized(ReasonerFamily) {
 				long t1 = System.currentTimeMillis();
 				generateTboxModelWithSpec();
 				logger.debug("In prepareInfModel, modelSpec: "+modelSpec.toString());
 				logger.debug("In prepareInfModel, reasoner rule count: "+getReasonerOnlyWhenNeeded().getRules().size());
 				infModel = ModelFactory.createInfModel(reasoner, tboxModelWithSpec);
-				if (collectTimingInfo) {
+//		        InfGraph graph = reasoner.bind(tboxModelWithSpec.getGraph());
+//		        infModel = new InfModelImpl(graph);
+
+				synchronized(ReasonerFamily) {
 					infModel.size();	// this forces instantiation of the inference model
-					long t2 = System.currentTimeMillis();
-					timingInfo.add(new ReasonerTiming(TIMING_PREPARE_INFMODEL, "prepare inference model", t2 - t1));
-				}
+					if (collectTimingInfo) {
+						long t2 = System.currentTimeMillis();
+						timingInfo.add(new ReasonerTiming(TIMING_PREPARE_INFMODEL, "prepare inference model", t2 - t1));
+					}
 				}
 			}
 		}
