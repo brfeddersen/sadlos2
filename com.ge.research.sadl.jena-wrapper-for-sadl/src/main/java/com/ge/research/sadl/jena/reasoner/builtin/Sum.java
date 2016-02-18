@@ -41,7 +41,8 @@ public class Sum extends com.hp.hpl.jena.reasoner.rulesys.builtins.Sum {
         return argLength;
     }
     
-    private void setArgLength(int len) {
+    @SuppressWarnings("unused")
+	private void setArgLength(int len) {
     	argLength = len;
     }
 

@@ -23,13 +23,8 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.ModelGetter;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.reasoner.rulesys.Rule.ParserException;
@@ -40,6 +35,7 @@ import com.hp.hpl.jena.util.FileManager;
 public class JenaBareThread extends Thread {
 	private static Logger logger = LoggerFactory.getLogger("JenaBareThread");
 	
+	@SuppressWarnings("unused")
 	public void run() {
 		String modelFolderDir = "file:/E:/crapo/workspaceSadlGEOnlyDistrib/com.ge.research.sadl.jena-wrapper-for-sadl/src/test/resources/DataModels/Shapes/OwlModels";
 		String tbox = modelFolderDir + "/Rule.owl";

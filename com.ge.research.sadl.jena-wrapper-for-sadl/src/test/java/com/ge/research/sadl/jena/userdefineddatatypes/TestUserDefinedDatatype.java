@@ -6,12 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
-import org.apache.xerces.xs.XSAnnotation;
-import org.apache.xerces.xs.XSNamespaceItem;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -32,6 +29,7 @@ import com.hp.hpl.jena.reasoner.ValidityReport.Report;
 public class TestUserDefinedDatatype {
 	
 
+	@SuppressWarnings("unused")
 	@Test
 	@Ignore
 	public void test() throws DatatypeFormatException, FileNotFoundException {
