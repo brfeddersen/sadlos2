@@ -26,7 +26,6 @@ package com.ge.research.sadl.jena.reasoner.builtin;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
 import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
-import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
 
 /**
