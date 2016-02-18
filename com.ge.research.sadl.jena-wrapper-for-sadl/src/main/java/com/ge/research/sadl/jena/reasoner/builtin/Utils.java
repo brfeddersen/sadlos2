@@ -495,15 +495,15 @@ public class Utils {
      * Construct a new float valued node
      */
     public static synchronized Node makeFloatNode(double value) {
-    	return NodeFactory.createLiteral(LiteralLabelFactory.create(new Float(value)));
+    	return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(new Float(value)));
 //        return Node.createLiteral(new LiteralLabel(new Float(value)));
     }
     
     public static synchronized Node makeBooleanNode(boolean value) {
-    	return NodeFactory.createLiteral(LiteralLabelFactory.create(new Boolean(value)));
+    	return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(new Boolean(value)));
     }
     
     public static synchronized Node makeXSDDateTimeNode(XSDDateTime value) {
-    	return NodeFactory.createLiteral(LiteralLabelFactory.create(value));
+    	return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(value));
     }
 }
