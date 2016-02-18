@@ -51,7 +51,8 @@ public class Min extends BaseBuiltin {
         return argLength;
     }
     
-    private void setArgLength(int len) {
+    @SuppressWarnings("unused")
+	private void setArgLength(int len) {
     	argLength = len;
     }
 
@@ -65,7 +66,8 @@ public class Min extends BaseBuiltin {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
-    public boolean bodyCall(Node[] args, int length, RuleContext context) {
+    @SuppressWarnings("unused")
+	public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         BindingEnvironment env = context.getEnv();
         Object minVal = null;
