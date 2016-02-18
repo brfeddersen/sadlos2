@@ -75,59 +75,19 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws SessionNotFoundException 
 	 * @throws QueryParseException 
 	 * @throws NameNotFoundException 
+	 * @deprecated As of release 2.4.2, replaced by {@link #getAllSubclassesOfClass(String))}
 	 */
-	public abstract String[] getAllSubclassesOfTaxonomy(String root) throws InvalidNameException, ReasonerNotFoundException, ConfigurationException, NameNotFoundException, QueryParseException, SessionNotFoundException, QueryCancelledException;
-
+	@Deprecated
+	public abstract String[] getAllSubclassesOfTaxonomy(String root)
+			throws InvalidNameException, ReasonerNotFoundException,
+			ConfigurationException, NameNotFoundException, QueryParseException,
+			SessionNotFoundException, QueryCancelledException;
+	
 	/**
-	 * This method returns all of the direct subclasses (one level down) of root in a class hierarchy.
+	 * This method returns all the leaf classes of the classification hierarchy starting at
+	 * a given class.
 	 * 
-	 * @param root, the starting class type name 
-	 * @return class names of all of the direct descendants, or null if none were found
-	 * @throws ConfigurationException 
-	 * @throws ReasonerNotFoundException 
-	 * @throws InvalidNameException 
-	 * @throws QueryCancelledException 
-	 * @throws SessionNotFoundException 
-	 * @throws QueryParseException 
-	 * @throws NameNotFoundException 
-	 */
-	public abstract String[] getDirectSubclassesOfTaxonomy(String root) throws InvalidNameException, ReasonerNotFoundException, ConfigurationException, NameNotFoundException, QueryParseException, SessionNotFoundException, QueryCancelledException;
-
-	/**
-	 * This method returns all of the ancestor classes given a starting class,
-	 *  "className", in a class hierarchy.
-	 * 
-	 * @param root, the starting class type name 
-	 * @return class names of all of the ancestors, or null if none were found
-	 * @throws ConfigurationException 
-	 * @throws ReasonerNotFoundException 
-	 * @throws InvalidNameException 
-	 * @throws QueryCancelledException 
-	 * @throws SessionNotFoundException 
-	 * @throws QueryParseException 
-	 * @throws NameNotFoundException 
-	 */
-	public abstract String[] getAncestorClassesOfTaxonomy(String className) throws InvalidNameException, ReasonerNotFoundException, ConfigurationException, NameNotFoundException, QueryParseException, SessionNotFoundException, QueryCancelledException;
-
-	/**
-	 * This method returns all of the direct super classes (one level up) given
-	 * a starting class, "className", in a class hierarchy.
-	 * 
-	 * @param root, the starting class type name 
-	 * @return class names of all of the direct ancestors, or null if none were found
-	 * @throws ConfigurationException 
-	 * @throws ReasonerNotFoundException 
-	 * @throws InvalidNameException 
-	 * @throws QueryCancelledException 
-	 * @throws SessionNotFoundException 
-	 * @throws QueryParseException 
-	 * @throws NameNotFoundException 
-	 */
-	public abstract String[] getDirectSuperclassesOfTaxonomy(String className) throws InvalidNameException, ReasonerNotFoundException, ConfigurationException, NameNotFoundException, QueryParseException, SessionNotFoundException, QueryCancelledException;
-
-	/**
-	 * This method returns all the leaf classes of the classification hierarchy starting at root
-	 * @param root -- the localname, prefix:localname, or complete URI of the root class
+	 * @param cls -- the localname, prefix:localname, or complete URI of the root class
 	 * @return - a String array containing the local names of the leaf classes
 	 * @throws IOException
 	 * @throws NameNotFoundException
@@ -137,31 +97,131 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws InvalidNameException 
 	 * @throws SessionNotFoundException 
 	 * @throws QueryCancelledException 
+	 * @deprecated As of release 2.4.2, replaced by {@link #getLeafClassesOfClass(String))}
 	 */
+	@Deprecated
 	public abstract String[] getLeafClassesOfTaxonomy(String root)
 			throws IOException, NameNotFoundException, QueryParseException,
-			ReasonerNotFoundException, InvalidNameException,
-			ConfigurationException, SessionNotFoundException,
+			ReasonerNotFoundException, InvalidNameException, ConfigurationException,
+			SessionNotFoundException, QueryCancelledException;
+	
+	/**
+	 * This method returns all of the subclasses of the classification hierarchy
+	 * starting at a given class
+	 * 
+	 * @param cls - complete URI of the class
+	 * @return class names of all of the subclasses of a given class, or null if none were found
+	 * @throws ConfigurationException 
+	 * @throws ReasonerNotFoundException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 * @throws QueryParseException 
+	 * @throws NameNotFoundException 
+	 */
+	public abstract String[] getAllSubclassesOfClass(String cls)
+			throws InvalidNameException, ReasonerNotFoundException,
+			ConfigurationException, NameNotFoundException, QueryParseException,
 			QueryCancelledException;
 
 	/**
-	 * This method returns all the instances of the given class
-	 * @param cls -- the localname, prefix:localname, or complete URI of the class
-	 * @return - a String array containing the localnames of the instances of the class
-	 * @throws IOException
+	 * This method returns all of the direct subclasses (one level down) of a given
+	 * class in a class hierarchy.
+	 * 
+	 * @param cls - complete URI of the class 
+	 * @return class names of all of the direct subclasses of a given class, or null if none were found
+	 * @throws ConfigurationException 
+	 * @throws ReasonerNotFoundException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 * @throws QueryParseException 
+	 * @throws NameNotFoundException 
+	 */
+	public abstract String[] getDirectSubclassesOfClass(String cls)
+			throws InvalidNameException, ReasonerNotFoundException, ConfigurationException,
+			NameNotFoundException, QueryParseException, QueryCancelledException;
+
+	/**
+	 * This method returns all of the super classes given a starting class,
+	 *  "cls", in a class hierarchy.
+	 * 
+	 * @param cls - complete URI of the class
+	 * @return class names of all of the super classes of a given class, or null if none were found
+	 * @throws ConfigurationException 
+	 * @throws ReasonerNotFoundException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 * @throws QueryParseException 
+	 * @throws NameNotFoundException 
+	 */
+	public abstract String[] getAllSuperclassesOfClass(String cls)
+			throws InvalidNameException, ReasonerNotFoundException, ConfigurationException,
+			NameNotFoundException, QueryParseException, QueryCancelledException;
+
+	/**
+	 * This method returns all of the direct super classes (one level up) given
+	 * a starting class, "cls", in a class hierarchy.
+	 * 
+	 * @param cls - complete URI of the class 
+	 * @return class names of all of the direct super classes of a given class, or null if none were found
+	 * @throws ConfigurationException 
+	 * @throws ReasonerNotFoundException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 * @throws QueryParseException 
+	 * @throws NameNotFoundException 
+	 */
+	public abstract String[] getDirectSuperclassesOfClass(String cls)
+			throws InvalidNameException, ReasonerNotFoundException, ConfigurationException,
+			NameNotFoundException, QueryParseException, QueryCancelledException;
+
+	/**
+	 * This method returns all the leaf classes of the classification hierarchy starting at
+	 * a given class.
+	 * 
+	 * @param cls -- the localname, prefix:localname, or complete URI of the root class
+	 * @return - a String array containing the local names of the leaf classes
 	 * @throws NameNotFoundException
 	 * @throws ReasonerNotFoundException 
 	 * @throws QueryParseException 
 	 * @throws ConfigurationException 
 	 * @throws InvalidNameException 
-	 * @throws SessionNotFoundException 
+	 * @throws QueryCancelledException 
+	 */
+	public abstract String[] getLeafClassesOfClass(String cls)
+			throws NameNotFoundException, QueryParseException, ReasonerNotFoundException,
+			InvalidNameException, ConfigurationException, QueryCancelledException;
+
+	/**
+	 * This method returns all the root classes of the classification hierarchy of
+	 * a given class.
+	 * 
+	 * @param cls -- the localname, prefix:localname, or complete URI of the root class
+	 * @return - a String array containing the local names of the root classes
+	 * @throws NameNotFoundException
+	 * @throws ReasonerNotFoundException 
+	 * @throws QueryParseException 
+	 * @throws ConfigurationException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 */
+//	public abstract String[] getRootClassesOfClass(String cls)
+//			throws NameNotFoundException, QueryParseException, ReasonerNotFoundException,
+//			InvalidNameException, ConfigurationException, QueryCancelledException;
+
+	/**
+	 * This method returns all the instances of the given class
+	 * @param cls -- the localname, prefix:localname, or complete URI of the class
+	 * @return - a String array containing the localnames of the instances of the class
+	 * @throws NameNotFoundException
+	 * @throws ReasonerNotFoundException 
+	 * @throws QueryParseException 
+	 * @throws ConfigurationException 
+	 * @throws InvalidNameException 
 	 * @throws QueryCancelledException 
 	 */
 	public abstract String[] getInstancesOfClass(String cls)
-			throws IOException, NameNotFoundException, QueryParseException,
-			ReasonerNotFoundException, InvalidNameException,
-			ConfigurationException, SessionNotFoundException,
-			QueryCancelledException;
+			throws NameNotFoundException, QueryParseException, ReasonerNotFoundException,
+			InvalidNameException, ConfigurationException, QueryCancelledException;
 
 	/**
 	 * This method returns true if and only if the property is an ObjectProperty
@@ -172,14 +232,11 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws QueryParseException 
 	 * @throws ConfigurationException 
 	 * @throws InvalidNameException 
-	 * @throws SessionNotFoundException 
 	 * @throws QueryCancelledException 
 	 */
 	public abstract boolean isObjectProperty(String property)
-			throws NameNotFoundException, QueryParseException,
-			ReasonerNotFoundException, InvalidNameException,
-			ConfigurationException, SessionNotFoundException,
-			QueryCancelledException;
+			throws NameNotFoundException, QueryParseException, ReasonerNotFoundException,
+			InvalidNameException, ConfigurationException, QueryCancelledException;
 
 	/**
 	 * This method returns true if and only if the property is an DatatypeProperty
@@ -190,14 +247,11 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws QueryParseException 
 	 * @throws ConfigurationException 
 	 * @throws InvalidNameException 
-	 * @throws SessionNotFoundException 
 	 * @throws QueryCancelledException 
 	 */
 	public abstract boolean isDatatypeProperty(String property)
-			throws NameNotFoundException, QueryParseException,
-			ReasonerNotFoundException, InvalidNameException,
-			ConfigurationException, SessionNotFoundException,
-			QueryCancelledException;
+			throws NameNotFoundException, QueryParseException, ReasonerNotFoundException,
+			InvalidNameException, ConfigurationException, QueryCancelledException;
 
 	/**
 	 * This method returns the class(es) which are the domain of the property, if any.
@@ -208,14 +262,11 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws QueryParseException 
 	 * @throws ConfigurationException 
 	 * @throws InvalidNameException 
-	 * @throws SessionNotFoundException 
 	 * @throws QueryCancelledException 
 	 */
 	public abstract String[] getPropertyDomain(String property)
-			throws NameNotFoundException, QueryParseException,
-			ReasonerNotFoundException, InvalidNameException,
-			ConfigurationException, SessionNotFoundException,
-			QueryCancelledException;
+			throws NameNotFoundException, QueryParseException, ReasonerNotFoundException,
+			InvalidNameException, ConfigurationException, QueryCancelledException;
 
 	/**
 	 * This method returns the class(es) or XSD types which are the range of the property, if any.
@@ -226,34 +277,27 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws QueryParseException 
 	 * @throws ConfigurationException 
 	 * @throws InvalidNameException 
-	 * @throws SessionNotFoundException 
 	 * @throws QueryCancelledException 
 	 */
 	public abstract String[] getPropertyRange(String property)
-			throws NameNotFoundException, QueryParseException,
-			ReasonerNotFoundException, InvalidNameException,
-			ConfigurationException, SessionNotFoundException,
-			QueryCancelledException;
+			throws NameNotFoundException, QueryParseException, ReasonerNotFoundException,
+			InvalidNameException, ConfigurationException, QueryCancelledException;
 
 	/**
 	 * This method returns all the classes that must be represented in the range of the given property on the given class
 	 * @param property -- the localname, prefix:localname, or complete URI of the property
 	 * @param cls -- the localname, prefix:localname, or complete URI of the class
 	 * @return - a String array containing the range classes that are required to be represented in the values of the property
-	 * @throws IOException
 	 * @throws NameNotFoundException
 	 * @throws ReasonerNotFoundException 
 	 * @throws QueryParseException 
 	 * @throws ConfigurationException 
 	 * @throws InvalidNameException 
-	 * @throws SessionNotFoundException 
 	 * @throws QueryCancelledException 
 	 */
 	public abstract String[] getRequiredRangeClassesOfPropertyOfClass(
-			String cls, String property) throws IOException,
-			NameNotFoundException, QueryParseException,
-			ReasonerNotFoundException, InvalidNameException,
-			ConfigurationException, SessionNotFoundException,
+			String cls, String property) throws NameNotFoundException, QueryParseException,
+			ReasonerNotFoundException, InvalidNameException, ConfigurationException,
 			QueryCancelledException;
 
 	/**
@@ -276,7 +320,8 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 			SessionNotFoundException, QueryCancelledException;
 
 	/**
-	 * This method returns all the names of instances that are allowed values of the given property on the given class
+	 * This method returns all the names of instances that are allowed values of the given
+	 * property on the given class.
 	 * @param property -- the localname, prefix:localname, or complete URI of the property
 	 * @param cls -- the localname, prefix:localname, or complete URI of the class
 	 * @return - a String array of the allowed value instances
@@ -297,12 +342,11 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 			QueryCancelledException;
 
 	/**
-	 * This method returns all the allowed values of the given property on the given class. Note that in the case of xsd:string values,
-	 * the values will be wrapped in double quotes.
+	 * This method returns all the allowed values of the given property on the given class.
+	 * Note that in the case of xsd:string values, the values will be wrapped in double quotes.
 	 * @param property -- the localname, prefix:localname, or complete URI of the property
 	 * @param cls -- the localname, prefix:localname, or complete URI of the class
 	 * @return - an Object array of the allowed values, which will be of type Integer, String, Float, etc.
-	 * @throws IOException
 	 * @throws NameNotFoundException
 	 * @throws ReasonerNotFoundException 
 	 * @throws QueryParseException 
@@ -319,15 +363,97 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 
 	/**
 	 * This method returns all of the properties that have the given class in the property domain.
-	 * @param cls
-	 * @return
+	 * @param cls -- the localname, prefix:localname, or complete URI of the class
+	 * @return - an String array of all of the properties defined in the given class
 	 * @throws ConfigurationException 
 	 * @throws ReasonerNotFoundException 
 	 * @throws InvalidNameException 
 	 * @throws QueryCancelledException 
 	 * @throws QueryParseException 
 	 */
-	public abstract String[] getPropertiesWithGivenClassInDomain(String cls) throws InvalidNameException, ReasonerNotFoundException, ConfigurationException, QueryParseException, QueryCancelledException;
+	public abstract String[] getPropertiesWithGivenClassInDomain(String cls)
+			throws InvalidNameException, ReasonerNotFoundException,
+			ConfigurationException, QueryParseException, QueryCancelledException;
+	
+	/**
+	 * This method returns all of the object properties that have the given class
+	 * in the property domain.
+	 *  
+	 * @param cls - the localname, prefix:localname, or complete URI of the class
+	 * @return - an String array of all of the properties defined in the given class
+	 * @throws ConfigurationException 
+	 * @throws ReasonerNotFoundException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 * @throws QueryParseException 
+	 */
+	public abstract String[] getObjectPropertiesWithGivenClassInDomain(String cls)
+			throws InvalidNameException, ReasonerNotFoundException,
+			ConfigurationException, QueryParseException, QueryCancelledException;
+	
+	/**
+	 * This method returns all of the datatype properties that have the given class
+	 * in the property domain.
+	 *  
+	 * @param cls - the localname, prefix:localname, or complete URI of the class
+	 * @return - an String array of all of the properties defined in the given class
+	 * @throws ConfigurationException 
+	 * @throws ReasonerNotFoundException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 * @throws QueryParseException 
+	 */
+	public abstract String[] getDatatypePropertiesWithGivenClassInDomain(String cls)
+			throws InvalidNameException, ReasonerNotFoundException,
+			ConfigurationException, QueryParseException, QueryCancelledException;
+	
+	/**
+	 * This method returns all of the properties that exist with a class from the
+	 * class hierarchy in the property domain.
+	 *  
+	 * @param cls - the localname, prefix:localname, or complete URI of the class
+	 * @return - an String array of all of the properties defined in the given class
+	 * @throws ConfigurationException 
+	 * @throws ReasonerNotFoundException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 * @throws QueryParseException 
+	 */
+	public abstract String[] getAllPropertiesWithinClassHierachyInDomain(String cls)
+			throws InvalidNameException, ReasonerNotFoundException,
+			ConfigurationException, QueryParseException, QueryCancelledException;
+	
+	/**
+	 * This method returns all of the object properties that exist with a class
+	 * from the class hierarchy in the property domain.
+	 *  
+	 * @param cls - the localname, prefix:localname, or complete URI of the class
+	 * @return - an String array of all of the properties defined in the given class
+	 * @throws ConfigurationException 
+	 * @throws ReasonerNotFoundException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 * @throws QueryParseException 
+	 */
+	public abstract String[] getAllObjectPropertiesWithinClassHierachyInDomain(String cls)
+			throws InvalidNameException, ReasonerNotFoundException,
+			ConfigurationException, QueryParseException, QueryCancelledException;
+	
+	/**
+	 * This method returns all of the datatype properties that exist with a class
+	 * from the class hierarchy in the property domain.
+	 *  
+	 * @param cls - the localname, prefix:localname, or complete URI of the class
+	 * @return - an String array of all of the properties defined in the given class
+	 * @throws ConfigurationException 
+	 * @throws ReasonerNotFoundException 
+	 * @throws InvalidNameException 
+	 * @throws QueryCancelledException 
+	 * @throws QueryParseException 
+	 */
+	public abstract String[] getAllDatatypePropertiesWithinClassHierachyInDomain(String cls)
+			throws InvalidNameException, ReasonerNotFoundException,
+			ConfigurationException, QueryParseException, QueryCancelledException;
 	
 	/**
 	 * This method returns the default value of the given property on the given class
@@ -342,11 +468,14 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws QueryParseException 
 	 * @throws NameNotFoundException 
 	 */
-	public abstract Object getDefaultValueOfPropertyOnClass(String cls, String prop) throws InvalidNameException, ReasonerNotFoundException, 
-		ConfigurationException, NameNotFoundException, QueryParseException, SessionNotFoundException, QueryCancelledException;
+	public abstract Object getDefaultValueOfPropertyOnClass(String cls, String prop)
+			throws InvalidNameException, ReasonerNotFoundException, 
+			ConfigurationException, NameNotFoundException, QueryParseException,
+			SessionNotFoundException, QueryCancelledException;
 	
 	/**
-	 * This method returns the rdfs:label values (aka aliases, aka longnames) for a given concept identified by URI
+	 * This method returns the rdfs:label values (aka aliases, aka longnames) for
+	 * a given concept identified by URI
 	 * @param conceptUri -- the URI of the concept
 	 * @return -- a String array of labels if any else null
 	 * @throws ConfigurationException 
@@ -355,10 +484,13 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws QueryCancelledException 
 	 * @throws QueryParseException 
 	 */
-	public abstract String[] getConceptRdfsLabels(String conceptUri) throws InvalidNameException, ReasonerNotFoundException, ConfigurationException, QueryParseException, QueryCancelledException;
+	public abstract String[] getConceptRdfsLabels(String conceptUri)
+			throws InvalidNameException, ReasonerNotFoundException, ConfigurationException,
+			QueryParseException, QueryCancelledException;
 	
 	/**
-	 * This method returns the rdfs:comment values (aka notes, aka descriptions) for a given concept identified by URI
+	 * This method returns the rdfs:comment values (aka notes, aka descriptions) 
+	 * for a given concept identified by URI
 	 * @param conceptUri -- the URI of the concept
 	 * @return -- a String array of comments if any else null
 	 * @throws ConfigurationException 
@@ -367,7 +499,9 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws QueryCancelledException 
 	 * @throws QueryParseException 
 	 */
-	public abstract String[] getConceptRdfsComments(String conceptUri) throws InvalidNameException, ReasonerNotFoundException, ConfigurationException, QueryParseException, QueryCancelledException;
+	public abstract String[] getConceptRdfsComments(String conceptUri)
+			throws InvalidNameException, ReasonerNotFoundException, ConfigurationException,
+			QueryParseException, QueryCancelledException;
 
 	/**
 	 * This method returns the annotation on the given class
@@ -380,6 +514,8 @@ import com.ge.research.sadl.server.SessionNotFoundException;
 	 * @throws QueryCancelledException 
 	 * @throws QueryParseException 
 	 */
-	public abstract String getAnnotation(String className, String annotationName) throws InvalidNameException, ReasonerNotFoundException, ConfigurationException, QueryParseException, QueryCancelledException ;
+	public abstract String getAnnotation(String className, String annotationName)
+			throws InvalidNameException, ReasonerNotFoundException, ConfigurationException,
+			QueryParseException, QueryCancelledException ;
 
 }
