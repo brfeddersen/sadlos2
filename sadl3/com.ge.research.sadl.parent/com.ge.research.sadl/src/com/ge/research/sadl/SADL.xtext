@@ -227,13 +227,8 @@ InfixOperator :
 	| 'does' 'not' 'contain'
 ;
 
-<<<<<<< HEAD
-RelationalExpression returns Expression:
-	Addition ->({BinaryOperation.left=current} =>op=OpCompare right=Addition)*;
-=======
 RelationalExpression<EnabledWith> returns Expression:
 	Addition<EnabledWith> ->({BinaryOperation.left=current} =>op=OpCompare right=Addition<EnabledWith>)*;
->>>>>>> crapo/master
 
 OpCompare:
 	'>=' | '<=' | '>' | '<';
@@ -244,13 +239,8 @@ Addition<EnabledWith> returns Expression:
 Multiplication<EnabledWith> returns Expression:
 	Power<EnabledWith> (({Multi.left=current} '*' | {Div.left=current} '/' | {Mod.left=current} '%') right=Power<EnabledWith>)*;
 
-<<<<<<< HEAD
-Power returns Expression:
-	PropOfSubject (({Exp.left=current} '^') right=PropOfSubject)*;
-=======
 Power<EnabledWith> returns Expression:
 	PropOfSubject<EnabledWith> (({Exp.left=current} '^') right=PropOfSubject<EnabledWith>)*;
->>>>>>> crapo/master
 
 //PrefixOperation returns Expression :
 //	  {UnaryExpression} 'not' negated=PrefixOperation
@@ -270,19 +260,11 @@ Power<EnabledWith> returns Expression:
 //;
 
 // PropOfSubject has right associativity: prop1 of prop2 of Subj is equivalent to prop1 of (prop2 of Subj)
-<<<<<<< HEAD
-PropOfSubject returns Expression: // (17)
-	PrimaryExpression ->(({PropOfSubject.left=current} ('of'|'for'|'in') right=PropOfSubject) |  
-					  (=>({SubjHasProp.left=current} ('with'|'has') prop=SadlResource) right=PrimaryExpression)+)?
-|   {UnaryExpression} op=('not' | '!' | 'only' | '-') expr=PropOfSubject // this can be applied to other unitary operations
-|   {ElementInList} 'element' (before?='before'|after?='after')? element=PropOfSubject;
-=======
 PropOfSubject<EnabledWith> returns Expression: // (17)
 	PrimaryExpression ->(({PropOfSubject.left=current} ('of'|'for'|'in') right=PropOfSubject<EnabledWith>) |  
 					  (=>({SubjHasProp.left=current} (<EnabledWith>'with'|'has') prop=SadlResource) right=PrimaryExpression)+)?
 |   {UnaryExpression} op=('not' | '!' | 'only' | '-') expr=PropOfSubject<EnabledWith> // this can be applied to other unitary operations
 |   {ElementInList} 'element' (before?='before'|after?='after')? element=PropOfSubject<EnabledWith>;
->>>>>>> crapo/master
 
 // primary expressions are the atom units of expression in the grammar	
 PrimaryExpression returns Expression: // (20)
