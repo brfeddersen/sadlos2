@@ -297,6 +297,9 @@ public class SadlUtils {
 	 * @throws MalformedURLException 
 	 */
 	public String fileUrlToFileName(String url) throws MalformedURLException {
+		if (url.startsWith(IConfigurationManager.HTTP_URL_PREFIX)) {
+			throw new MalformedURLException("The URL \""+url+"\" is not file url!");
+		}
 		if (!url.startsWith(IConfigurationManager.FILE_SHORT_PREFIX)) {
 			return url;
 		}
