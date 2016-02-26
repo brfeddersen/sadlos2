@@ -276,15 +276,16 @@ public class SadlServerImpl implements ISadlServer {
 	        }
 	        setConfigurationManagerModelGetter();
 	        reasoner = getConfigurationMgr().getReasoner();
+	        if (reasoner == null) {
+	        	logger.info("Failed to get reasoner");
+				throw new ConfigurationException("Failed to get reasoner");
+	        }
 	 	} catch (MalformedURLException e1) {
 			throw new ConfigurationException("Error setting repository type: " + e1.getMessage());
 		}
         
-        if (this.reasoner == null) {
-        	logger.info("Failed to get reasoner");
-        } else {
-        	logger.info("Got reasoner");
-        }
+       	logger.info("Got reasoner");
+
  		reasoner.collectTimingInformation(collectTimingInformation);
 		List<com.ge.research.sadl.reasoner.ConfigurationItem> transPrefs = null;
 		if (preferences != null && preferences.size() > 0) {
@@ -299,15 +300,15 @@ public class SadlServerImpl implements ISadlServer {
     		}
 		}
         int iStatus = reasoner.initializeReasoner(getModelFolder(), modelName, transPrefs, repoType);
-        this.modelName = modelName;
-        if (this.reasoner == null) {
-        	logger.info("Failed to get reasoner");
-        } else if (iStatus == 0){
+        if (iStatus == IReasoner.ERROR) {
+        	logger.info("Got reasoner reported an unknown error");
+        } else if (iStatus == IReasoner.FAILED) {
         	logger.info("Got reasoner but initialization returned failed status");
         } else {
         	logger.info("Got good reasoner");
         }
         
+        this.modelName = modelName;
         return "SadlServer" + System.currentTimeMillis();
 	}
 
