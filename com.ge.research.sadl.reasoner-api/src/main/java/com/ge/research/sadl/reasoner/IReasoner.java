@@ -39,11 +39,14 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 public interface IReasoner {
 	
+    public final static int ERROR = -1;
+    public final static int FAILED = 0;
 	public final static String TotalReasoningTime = "TotalReasoningTime";
+
 	/**
 	 * Method to configure the reasoner properties
 	 * @param  preferences
-	 * @return integer (0 if not successful, number of properties set otherwise)
+	 * @return integer (FAILED if not successful, number of properties set otherwise)
 	 * @throws ReasonerNotFoundException
 	 * @throws ConfigurationException 
 	 */	
