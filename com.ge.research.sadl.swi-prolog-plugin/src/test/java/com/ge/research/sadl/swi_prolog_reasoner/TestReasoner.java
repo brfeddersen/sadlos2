@@ -19,6 +19,7 @@ public class TestReasoner {
 
 	private String kbroot;
 
+	@Ignore
 	@Before
 	public void setUp() throws Exception {
 		URL dataModelsFolder = ClassLoader.getSystemResource("DataModels");
@@ -26,12 +27,14 @@ public class TestReasoner {
 		System.out.println("File kbase root: " + kbroot);
 	}
 
+	@Ignore
 	@Test
 	public void testGetReasonerCategory() {
 		IReasoner rsrnr = new SWIPrologReasonerPlugin();
 		assertEquals(rsrnr.getConfigurationCategory(), "SWI-Prolog-Reasoner");
 	}
 	
+	@Ignore
 	@Test
 	public void testGetReasonerFamily() {
 		IReasoner rsrnr = new SWIPrologReasonerPlugin();
@@ -52,6 +55,7 @@ public class TestReasoner {
 		System.out.println(rs.toString());
 	}	
 
+	@Ignore
 	@Test
 	public void testXXXy() {
 		IReasoner rsrnr = new SWIPrologReasonerPlugin();

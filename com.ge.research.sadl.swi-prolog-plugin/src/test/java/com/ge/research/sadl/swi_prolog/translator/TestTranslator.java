@@ -21,6 +21,7 @@ public class TestTranslator {
 
 	private String kbroot;
 
+	@Ignore
 	@Before
 	public void setUp() throws Exception {
 		URL dataModelsFolder = ClassLoader.getSystemResource("DataModels");
@@ -28,6 +29,7 @@ public class TestTranslator {
 		System.out.println("File kbase root: " + kbroot);
 	}
 
+	@Ignore
 	@Test
 	public void testTranslateRule() throws TranslationException {
 		ITranslator trans = new SWIPrologTranslatorPlugin();
@@ -47,6 +49,7 @@ public class TestTranslator {
 		fail("Not yet implemented");
 	}
 
+	@Ignore
 	@Test
 	public void testGetReasonerFamily() {
 		ITranslator trans = new SWIPrologTranslatorPlugin();
