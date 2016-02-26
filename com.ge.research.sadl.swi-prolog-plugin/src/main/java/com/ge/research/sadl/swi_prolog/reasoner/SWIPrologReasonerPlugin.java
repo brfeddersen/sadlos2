@@ -17,6 +17,7 @@ import java.util.Map;
 
 import javax.activation.DataSource;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,28 +59,40 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	public static String ReasonerFamily="SWI-Prolog-Based";
 	private static String ReasonerCategory = "SWI-Prolog-Reasoner";
 
+	private String swiPrologPath = "";
 	private String translatorPrologFolder;
 	private String portNumber = null;
 	private SWIPrologServiceInterface prologServiceInstance;
 	private String plUrl;
 	private IConfigurationManager configMgr;
+	private Process swiProcess = null;
 	
 	public SWIPrologReasonerPlugin() {
 		logger.debug("Creating new " + this.getClass().getName() + " reasoner.");
+		
+		// Setup the default path of each OS
+		if (SystemUtils.IS_OS_MAC_OSX) {
+			swiPrologPath = "/Applications/SWI-Prolog.app/Contents/MacOS/";
+		}
+		else if (SystemUtils.IS_OS_LINUX) {
+		}
+		else if (SystemUtils.IS_OS_WINDOWS) {
+		}
 	}
 
 	@Override
 	public int initializeReasoner(String KBIdentifier, String modelName,
 			List<ConfigurationItem> preferences, String repoType)
 			throws ReasonerNotFoundException, ConfigurationException {
-		// TODO Auto-generated method stub
-		for (ConfigurationItem config: preferences){
-			for (NameValuePair pair: config.getNameValuePairs()){
-				System.out.println(pair.getName());
-				System.out.println(pair.getValue());
+		if (preferences != null) {
+			for (ConfigurationItem config: preferences){
+				for (NameValuePair pair: config.getNameValuePairs()){
+					System.out.println(pair.getName());
+					System.out.println(pair.getValue());
+				}
 			}
 		}
-		return 0;
+		return initializeReasoner(KBIdentifier, modelName, repoType);
 	}
 
 	@Override
@@ -108,7 +121,7 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 		String errMsg = prepareService(pl, url, "true");
 		if (errMsg != null) {
 			System.err.println(errMsg);
-			return -1;
+			return ERROR;
 		}
 		
 		setPrologServiceInstance(pl);
@@ -132,8 +145,8 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 			owlFile = new SadlUtils().fileUrlToFileName(modelAltUrl);
 			sbLoad.append(createDerivedFilename(owlFile, "pl"));
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return ERROR;
 		}
 		sbLoad.append("').\n");
 		sbLoad.append(":- load_rdf_file('");
@@ -156,7 +169,7 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 		// to get configuration options
 		//String derval = getStringConfigurationValue(preferences , plImport, null);
 		setInitialized(true);
-		return 0;
+		return 1;
 	}
 
 	@Override
@@ -385,8 +398,7 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	@Override
 	public String prepareQuery(String query) throws InvalidNameException,
 			ConfigurationException {
-		// TODO Auto-generated method stub
-		return null;
+		return query;
 	}
 
 	@Override
@@ -597,8 +609,7 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 		if (pl == null) {
 			pl = new SWIPrologServiceInterface();
 		}
-		
-		
+			
 		// Step 2: is the service running?
 		boolean isRunning = true;
 		try {
@@ -607,14 +618,15 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 		catch (ConnectException e) {
 			isRunning = false;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
+			// Just eat the exception because will try and kill the process
+			// anyway
 		}
 		
 		// Step 3: kill existing SWI-Prolog service
-		if (isRunning) {
-			try {
-				Runtime.getRuntime().exec("taskkill /F /IM swipl-win.exe");
+		if (isRunning && (swiProcess!=null)) {
+//			try {
+				swiProcess.destroy();
+//				Runtime.getRuntime().exec("taskkill /F /IM swipl-win.exe");
 				// must wait a brief period of time or the killed process will respond to the query below
 				while (isRunning) {
 					try {
@@ -627,9 +639,9 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 //						e.printStackTrace();
 					}
 				}
-			} catch (IOException e2) {
-				e2.printStackTrace();
-			}
+//			} catch (IOException e2) {
+//				e2.printStackTrace();
+//			}
 		}
 		
 		// process is now running so now clear the temp folderprolog-service-temp
@@ -659,7 +671,7 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 				if (errorNumber == 0) {
 					try {
 						// Step 4: if query failed for the first time, start Service
-						Runtime.getRuntime().exec("cmd /c start /min " + getPrologCommandLine());
+						swiProcess = Runtime.getRuntime().exec(getPrologCommandLine());
 					} catch (IOException e1) {
 						e1.printStackTrace();
 						return e1.getMessage();
@@ -681,8 +693,44 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	}
 	
 	public String getPrologCommandLine() throws TranslationException, IOException {
-		String batchFile = getTranslatorPrologFolder() + "/run-prolog-service.bat";
 		
+		// In a temporary folder, "temp", we will create the prolog configuration file
+		// for the SWI-Prolog service
+		String plConfigFile = getTranslatorPrologFolder() + "/prolog-service-config/prolog-service-config.pl";
+		File pltf = new File(plConfigFile);
+		if (pltf.exists() && !pltf.canWrite()) {
+			throw new TranslationException("Can't create Prolog output file container'" + plConfigFile + "'; not writable.");
+		}
+		if (!pltf.getParentFile().exists()) {
+			pltf.getParentFile().mkdirs();
+		}
+
+		String port = getPortNumber();
+		String contents = "tmp_dir('" + getTranslatorPrologFolder().replace('\\', '/') + "/').\nport_number(" + port + ").";
+
+		SadlUtils su = new SadlUtils();
+		su.stringToFile(pltf, contents, false);
+		
+		if (SystemUtils.IS_OS_MAC_OSX) {
+			return getPrologCommandLine_OSX();
+		}
+		else if (SystemUtils.IS_OS_WINDOWS) {
+			return getPrologCommandLine_Windows();
+		}
+		return "";
+	}
+	
+	public String getPrologCommandLine_OSX() throws TranslationException, IOException {
+		
+
+		String runServiceFile = getConfigMgr().getModelFolder() + "/" + SWIPrologTranslatorPlugin.SWI_RUN_PROLOG_SERVICE_PL;
+		return getSwiPrologPath() + "swipl -s " + runServiceFile;			
+	}
+	
+	public String getPrologCommandLine_Windows() throws TranslationException, IOException {
+		
+		String batchFile = getTranslatorPrologFolder() + "/run-prolog-service.bat";
+	
 		// write the file
 		File bf = new File(batchFile);
 		if (bf.exists() && !bf.canWrite()) {
@@ -692,29 +740,28 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 			bf.getParentFile().mkdirs();
 		}
 		
-		String runServiceFile = getConfigMgr().getModelFolder() + "/run-prolog-service.pl";
+		String runServiceFile = getConfigMgr().getModelFolder() + "/" + SWIPrologTranslatorPlugin.SWI_RUN_PROLOG_SERVICE_PL;
 		String contents = "start /min swipl-win.exe -s " + runServiceFile + "\nexit\n";
 		SadlUtils su = new SadlUtils();
 		su.stringToFile(bf, contents, false);
 		
-		// create temp folder for SWI-Prolog service
-		String plConfigFile = getTranslatorPrologFolder() + "/prolog-service-config/prolog-service-config.pl";
-		File pltf = new File(plConfigFile);
-		if (pltf.exists() && !pltf.canWrite()) {
-			throw new TranslationException("Can't create Prolog output file container'" + plConfigFile + "'; not writable.");
+		return "cmd /c start /min " + batchFile;
+	}
+	
+	public void setSwiPrologPath(String path) {
+		if (path==null || path.isEmpty()) {
+			swiPrologPath = "";
 		}
-		if (!pltf.getParentFile().exists()) {
-			pltf.getParentFile().mkdirs();
+		else {
+			swiPrologPath = path;
+			if (!path.endsWith(File.pathSeparator)) {
+				swiPrologPath += "/";
+			}
 		}
-//		String tempFolder = getTranslatorPrologFolder() + "/temp";
-//		File tmp = new File(tempFolder);
-//		if (!tmp.exists() && !tmp.mkdirs()) {
-//			throw new TranslationException("Unable to create temp folder '" + tempFolder + "'");
-//		}
-		String port = getPortNumber();
-		contents = "tmp_dir('" + getTranslatorPrologFolder().replace('\\', '/') + "/').\nport_number(" + port + ").";
-		su.stringToFile(pltf, contents, false);
-		return batchFile;
+	}
+
+	public String getSwiPrologPath() {
+		return swiPrologPath;
 	}
 
 	public void setPortNumber(String port) {
