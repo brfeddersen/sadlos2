@@ -21,8 +21,6 @@ grammar com.ge.research.sadl.SADL hidden(WS, ML_COMMENT, SL_COMMENT) //with with
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 generate sADL "http://www.ge.com/research/sadl/SADL"
 
-
-
 SadlModel :
     'uri' baseUri=STRING ('alias' alias=ID)? ('version' version=STRING)? 
     	annotations+=SadlAnnotation* EOS 
@@ -85,14 +83,18 @@ SadlResource:
 ;
 
 SadlDataTypeFacet :	
-		minexin=('(' | '[') min=NUMBER? ',' max=NUMBER? maxexin=(']' | ')')
+		minexin=('(' | '[') min=FacetNumber? ',' max=FacetNumber? maxexin=(']' | ')')
 	|	regex=STRING
-	|	'length' (len=NUMBER | minlen=NUMBER '-' maxlen=NUMBER)
+	|	'length' (len=FacetNumber | minlen=FacetNumber '-' maxlen=FacetNumber)
 	|	'{' values+=FacetValue (','? values+=FacetValue)* '}'
 ;
 
+FacetNumber :
+	'-'? NUMBER
+;
+
 FacetValue :
-	STRING | NUMBER
+	STRING | FacetNumber
 ;
 
 // TypeReferences
@@ -188,10 +190,16 @@ DefiniteArticle :
 
 // This is primarily for debugging purposes. Any expression can be given after "Expr:" to see if it is valid. 
 // Such an expression has no meaning in translation.
+<<<<<<< HEAD
 ExpressionStatement:
+=======
+ExpressionStatement returns ExpressionScope :
+	{ExpressionStatement}
+>>>>>>> crapo/master
 	'Expr:' expr=Expression ('=>' evaluatesTo=STRING)?;
 
-RuleStatement :
+RuleStatement returns ExpressionScope :
+	{RuleStatement}
 	'Rule' name=QNAME ':'? 'if' ifs+=Expression // (','? ifs+=Expression)*
 						   'then' thens +=Expression // (','? thens+=Expression)*
 ;
@@ -235,6 +243,7 @@ OpCompare:
 
 Addition<EnabledWith> returns Expression:
 	Multiplication<EnabledWith> (({Plus.left=current} '+' | {Minus.left=current} '-') right=Multiplication<EnabledWith>)*;
+<<<<<<< HEAD
 
 Multiplication<EnabledWith> returns Expression:
 	Power<EnabledWith> (({Multi.left=current} '*' | {Div.left=current} '/' | {Mod.left=current} '%') right=Power<EnabledWith>)*;
@@ -242,6 +251,15 @@ Multiplication<EnabledWith> returns Expression:
 Power<EnabledWith> returns Expression:
 	PropOfSubject<EnabledWith> (({Exp.left=current} '^') right=PropOfSubject<EnabledWith>)*;
 
+=======
+
+Multiplication<EnabledWith> returns Expression:
+	Power<EnabledWith> (({Multi.left=current} '*' | {Div.left=current} '/' | {Mod.left=current} '%') right=Power<EnabledWith>)*;
+
+Power<EnabledWith> returns Expression:
+	PropOfSubject<EnabledWith> (({Exp.left=current} '^') right=PropOfSubject<EnabledWith>)*;
+
+>>>>>>> crapo/master
 //PrefixOperation returns Expression :
 //	  {UnaryExpression} 'not' negated=PrefixOperation
 //	| {UnitaryOperation} op=('!' | 'only' | '-') expr=PrefixOperation // this can be applied to other unitary operations

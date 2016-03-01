@@ -3,13 +3,10 @@ package com.ge.research.sadl.ui.preferences;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.xtext.preferences.IPreferenceValuesProvider;
 import org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage;
 import org.eclipse.xtext.ui.editor.preferences.fields.LabelFieldEditor;
 
 import com.ge.research.sadl.preferences.SadlPreferences;
-import com.ge.research.sadl.ui.internal.SadlActivator;
 
 public class SadlRootPreferencePage extends LanguageRootPreferencePage {
 	@SuppressWarnings("restriction")
@@ -37,11 +34,5 @@ public class SadlRootPreferencePage extends LanguageRootPreferencePage {
         						{"DD/MM/YYYY", SadlPreferences.DMY_ORDER_DMY.getId()}}, getFieldEditorParent()));
         addField(new BooleanFieldEditor(SadlPreferences.DEEP_VALIDATION_OFF.getId(), "Disable Deep Validation of Model", getFieldEditorParent()));
         addField(new StringFieldEditor(SadlPreferences.GRAPH_VIZ_PATH.getId(), "GraphViz bin folder", getFieldEditorParent()));
-    }
-	
-	@Override
-    public void init(IWorkbench workbench) {
-        setPreferenceStore(SadlActivator.getInstance().getPreferenceStore());
-        
     }
 }
