@@ -5,3 +5,5 @@ src-gen
 bin
 target
 classes
+
+*.jar
