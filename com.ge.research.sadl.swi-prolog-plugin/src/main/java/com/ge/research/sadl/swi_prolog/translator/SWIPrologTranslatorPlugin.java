@@ -377,27 +377,27 @@ public class SWIPrologTranslatorPlugin implements ITranslator {
 
 	@Override
 	public Map<String, ConfigurationOption> getTranslatorConfigurationOptions() {
-		// TODO Auto-generated method stub
+		// This translator doesn't have any configuration items
 		return null;
 	}
 
 	@Override
 	public boolean configure(ConfigurationItem configItem) {
-		// TODO Auto-generated method stub
+		// This translator doesn't have any configuration items
 		return false;
 	}
 
 	@Override
 	public boolean configure(List<ConfigurationItem> configItems) {
-		// TODO Auto-generated method stub
+		// This translator doesn't have any configuration items
 		return false;
 	}
 
 	@Override
 	public String prepareQuery(OntModel model, String queryStr)
 			throws InvalidNameException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		throw new InvalidNameException("Invalid configuration detected.  Please change the configuration.rdf file to use the SWI prolog reasoner!");
 	}
 
 	@Override
@@ -406,8 +406,7 @@ public class SWIPrologTranslatorPlugin implements ITranslator {
 			IConfigurationManager configMgr, List<Query> queries)
 			throws FunctionNotSupportedException, ConfigurationException,
 			TranslationException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new FunctionNotSupportedException(this.getClass().getCanonicalName() + " does not support discovery of optimal configuration.");
 	}
 
 	@Override

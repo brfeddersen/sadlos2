@@ -41,6 +41,7 @@ import com.ge.research.sadl.reasoner.ResultSet;
 import com.ge.research.sadl.reasoner.RuleNotFoundException;
 import com.ge.research.sadl.reasoner.TranslationException;
 import com.ge.research.sadl.reasoner.TripleNotFoundException;
+import com.ge.research.sadl.prolog.ontologyinterface.OntologyInterface;
 import com.ge.research.sadl.swi_prolog.plinterface.SWIPrologServiceInterface;
 import com.ge.research.sadl.swi_prolog.translator.SWIPrologTranslatorPlugin;
 import com.ge.research.sadl.utils.SadlUtils;
@@ -59,24 +60,29 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	public static String ReasonerFamily="SWI-Prolog-Based";
 	private static String ReasonerCategory = "SWI-Prolog-Reasoner";
 
+	private OntologyInterface ontointerface = new OntologyInterface();
+	private String swiPrologAppName = "";
 	private String swiPrologPath = "";
 	private String translatorPrologFolder;
 	private String portNumber = null;
 	private SWIPrologServiceInterface prologServiceInstance;
 	private String plUrl;
 	private IConfigurationManager configMgr;
-	private Process swiProcess = null;
+	protected boolean collectTimingInfo = false;
+	protected List<ReasonerTiming> timingInfo = null;
 	
 	public SWIPrologReasonerPlugin() {
 		logger.debug("Creating new " + this.getClass().getName() + " reasoner.");
 		
 		// Setup the default path of each OS
 		if (SystemUtils.IS_OS_MAC_OSX) {
+			swiPrologAppName = "swipl-win";
 			swiPrologPath = "/Applications/SWI-Prolog.app/Contents/MacOS/";
 		}
 		else if (SystemUtils.IS_OS_LINUX) {
 		}
 		else if (SystemUtils.IS_OS_WINDOWS) {
+			swiPrologAppName = "swipl-win.exe";
 		}
 	}
 
@@ -99,7 +105,14 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	public int initializeReasoner(String KBIdentifier, String modelName,
 			String repoType) throws ReasonerNotFoundException,
 			ConfigurationException {
+	
+		try {
+			ontointerface.initializeOntologyInterface(KBIdentifier, modelName, repoType);
+		} catch (QueryParseException | QueryCancelledException e1) {
+			e1.printStackTrace();
+		}
 		
+
 		//System.out.println("KB identifier is: " + KBIdentifier);
 		//System.out.println("Model name: " + modelName);
 		
@@ -191,6 +204,10 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	@Override
 	public void setConfigurationManager(IConfigurationManager configMgr)
 			throws ConfigurationException {
+		if (ontointerface != null) {
+			ontointerface.setConfigMgr(configMgr);
+		}
+		
 		this.setConfigMgr(configMgr);
 	}
 
@@ -249,41 +266,52 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 
 	@Override
 	public void setInstanceDataNamespace(String ns) {
-		// TODO Auto-generated method stub
-		
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			ontointerface.getJenareasoner().setInstanceDataNamespace(ns);
+		}
 	}
 
 	@Override
 	public String getInstanceDataNamespace() {
-		// TODO Auto-generated method stub
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			return ontointerface.getJenareasoner().getInstanceDataNamespace();
+		}
 		return null;
 	}
 
 	@Override
 	public boolean loadInstanceData(String instanceDatafile)
 			throws IOException, ConfigurationException {
-		// TODO Auto-generated method stub
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			return ontointerface.getJenareasoner().loadInstanceData(instanceDatafile);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean loadInstanceData(URI instanceDatafile) throws IOException,
 			ConfigurationException {
-		// TODO Auto-generated method stub
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			return ontointerface.getJenareasoner().loadInstanceData(instanceDatafile);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean loadInstanceData(InputStream is, String format)
 			throws IOException, ConfigurationException {
-		// TODO Auto-generated method stub
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			return ontointerface.getJenareasoner().loadInstanceData(is, format);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean loadInstanceData(OntModel model)
 			throws ConfigurationException {
-		// TODO Auto-generated method stub
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			return ontointerface.getJenareasoner().loadInstanceData(model);
+		}
 		return false;
 	}
 
@@ -296,14 +324,18 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	@Override
 	public boolean addTriple(String sub, String pred, String obj)
 			throws TripleNotFoundException, ConfigurationException {
-		// TODO Auto-generated method stub
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			return ontointerface.getJenareasoner().addTriple(sub, pred, obj);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean deleteTriple(String sub, String pred, String obj)
 			throws TripleNotFoundException, ConfigurationException {
-		// TODO Auto-generated method stub
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			return ontointerface.getJenareasoner().deleteTriple(sub, pred, obj);
+		}
 		return false;
 	}
 
@@ -311,13 +343,19 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	public void updateTriple(String oldSub, String oldPred, String oldObj,
 			String newSub, String newPred, String newObj)
 			throws TripleNotFoundException, ConfigurationException {
-		// TODO Auto-generated method stub
-		
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			ontointerface.getJenareasoner().updateTriple(oldSub, oldPred, oldObj, newSub, newPred, newObj);
+		}
 	}
 
 	@Override
 	public ResultSet ask(String askQuery) throws QueryParseException,
 			QueryCancelledException {
+		// if not prolog query, invoke other reasoner(s)
+		if (!isPrologQuery(askQuery)){
+			return ontointerface.runNonPrologQuery(askQuery);
+		}
+		
 		if (askQuery != null) {
 			String[] querySplit = askQuery.split("\\s+");
 			List<String> vars = new ArrayList<String>();
@@ -333,8 +371,14 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 					continue;
 				}
 				
-				if (varStart)
-					vars.add(removeLeadingQuestion(querySplit[index]));
+//BAF				if (varStart)
+//BAF					vars.add(removeLeadingQuestion(querySplit[index]));
+				if (varStart) {
+					String[] varSplit = querySplit[index].split(",+");
+					for (int i=0; i<varSplit.length; ++i) {
+						vars.add(removeLeadingQuestion(varSplit[i]));
+					}
+				}
 			}
 			
 			int whereIndex = askQuery.indexOf(" where ");
@@ -454,7 +498,9 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	@Override
 	public DataSource construct(String constructQuery)
 			throws QueryParseException, QueryCancelledException {
-		// TODO Auto-generated method stub
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			return ontointerface.getJenareasoner().construct(constructQuery);
+		}
 		return null;
 	}
 
@@ -471,14 +517,14 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 
 	@Override
 	public boolean collectTimingInformation(boolean bCollect) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean oldVal = collectTimingInfo;
+		collectTimingInfo = bCollect;
+		return oldVal;
 	}
 
 	@Override
 	public List<ReasonerTiming> getTimingInformation() {
-		// TODO Auto-generated method stub
-		return null;
+		return timingInfo;
 	}
 
 	@Override
@@ -582,14 +628,16 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 
 	@Override
 	public void setOutputFormat(String outputFmt) {
-		// TODO Auto-generated method stub
-		
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			ontointerface.getJenareasoner().setOutputFormat(outputFmt);
+		}
 	}
 
 	@Override
 	public void setModelInputFormat(String owlModelFormat) {
-		// TODO Auto-generated method stub
-		
+		if (ontointerface != null && ontointerface.getJenareasoner() != null) {
+			ontointerface.getJenareasoner().setModelInputFormat(owlModelFormat);
+		}
 	}
 
 	@Override
@@ -602,6 +650,41 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	public List<ModelError> getErrors() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private boolean isPrologQuery(String query){
+		int num_single_quotes = 0;
+		int num_double_quotes = 0;
+		if (!query.contains("select") && !query.contains("construct") && !query.contains("ask")) {
+			return true;
+		}
+		String[] querySplit = query.trim().split("\\s+");
+//		if (querySplit.length < 4)
+//			return false;
+		if (querySplit[0].toLowerCase().equals("select")){
+			for (int index = 0; index < query.length(); index++)
+			{
+				if (String.valueOf(query.charAt(index)).equals("'") && !String.valueOf(query.charAt(index-1)).equals("\\")){ 
+					num_single_quotes += 1;
+					continue;
+				}
+			
+				if (String.valueOf(query.charAt(index)).equals("\"") && !String.valueOf(query.charAt(index-1)).equals("\\")){
+					num_double_quotes += 1;
+					continue;
+				}
+				
+				if (String.valueOf(query.charAt(index)).equals("{")){
+					if ((num_single_quotes % 2 == 0) && (num_double_quotes % 2 == 0))
+						return false;
+				}
+				
+			}
+			
+			return true;
+		}
+			
+		return false;
 	}
 
 	public String prepareService(SWIPrologServiceInterface pl, String url, String query) {
@@ -623,10 +706,14 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 		}
 		
 		// Step 3: kill existing SWI-Prolog service
-		if (isRunning && (swiProcess!=null)) {
-//			try {
-				swiProcess.destroy();
-//				Runtime.getRuntime().exec("taskkill /F /IM swipl-win.exe");
+		if (isRunning) {
+			try {
+				if (SystemUtils.IS_OS_WINDOWS) {
+					Runtime.getRuntime().exec("taskkill /F /IM " + swiPrologAppName);
+				}
+				else {
+					Runtime.getRuntime().exec("pkill -q " + swiPrologAppName);
+				}
 				// must wait a brief period of time or the killed process will respond to the query below
 				while (isRunning) {
 					try {
@@ -635,16 +722,15 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 					catch (ConnectException e) {
 						isRunning = false;
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
-//						e.printStackTrace();
+						e.printStackTrace();
 					}
 				}
-//			} catch (IOException e2) {
-//				e2.printStackTrace();
-//			}
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
 		}
 		
-		// process is now running so now clear the temp folderprolog-service-temp
+		// process is now running so now clear the temp folder prolog-service-temp
         String tmpfolder;
 		try {
 			tmpfolder = getTranslatorPrologFolder();
@@ -655,7 +741,6 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 	    	}
 	    	tmpFolderFile.delete();
 		} catch (IOException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
     	
@@ -671,7 +756,19 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 				if (errorNumber == 0) {
 					try {
 						// Step 4: if query failed for the first time, start Service
-						swiProcess = Runtime.getRuntime().exec(getPrologCommandLine());
+						writePrologServiceConfig();
+						if (SystemUtils.IS_OS_MAC_OSX) {
+							Runtime.getRuntime().exec(getPrologCommandLine_OSX());
+						}
+						else if (SystemUtils.IS_OS_WINDOWS) {
+							Runtime.getRuntime().exec(getPrologCommandLine_Windows());
+						}
+						else if (SystemUtils.IS_OS_LINUX) {
+							Runtime.getRuntime().exec(getPrologCommandLine_Linux());
+						}
+						else {
+							return "Unable to start SWI-Prolog: Unknown OS.";
+						}
 					} catch (IOException e1) {
 						e1.printStackTrace();
 						return e1.getMessage();
@@ -692,7 +789,7 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 		return null;
 	}
 	
-	public String getPrologCommandLine() throws TranslationException, IOException {
+	public void writePrologServiceConfig() throws TranslationException, IOException {
 		
 		// In a temporary folder, "temp", we will create the prolog configuration file
 		// for the SWI-Prolog service
@@ -706,25 +803,73 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 		}
 
 		String port = getPortNumber();
-		String contents = "tmp_dir('" + getTranslatorPrologFolder().replace('\\', '/') + "/').\nport_number(" + port + ").";
+		String contents = "tmp_dir('" + getTranslatorPrologFolder().replace('\\', '/') + "/').\nport_number(" + port + ").\n";
 
 		SadlUtils su = new SadlUtils();
 		su.stringToFile(pltf, contents, false);
-		
-		if (SystemUtils.IS_OS_MAC_OSX) {
-			return getPrologCommandLine_OSX();
-		}
-		else if (SystemUtils.IS_OS_WINDOWS) {
-			return getPrologCommandLine_Windows();
-		}
-		return "";
 	}
 	
-	public String getPrologCommandLine_OSX() throws TranslationException, IOException {
+	public String[] getPrologCommandLine_OSX() throws TranslationException, IOException {
 		
-
+		String scriptName = getTranslatorPrologFolder() + "/run-prolog-service.sh";
+		
+		// write the file
+		File script = new File(scriptName);
+		if (script.exists() && !script.canWrite()) {
+			throw new TranslationException("Can't create script file '" + scriptName + "'; not writable.");
+		}
+		else {
+			script.getParentFile().mkdirs();
+		}
+		
 		String runServiceFile = getConfigMgr().getModelFolder() + "/" + SWIPrologTranslatorPlugin.SWI_RUN_PROLOG_SERVICE_PL;
-		return getSwiPrologPath() + "swipl -s " + runServiceFile;			
+
+		String cmd = "open -n " + swiPrologPath + swiPrologAppName + " --args -s " + runServiceFile;
+		return new String[]{"/bin/sh", "-c", cmd};
+	}
+	
+	public String[] getPrologCommandLine_Linux() throws TranslationException, IOException {
+		
+		String scriptName = getTranslatorPrologFolder() + "/run-prolog-service.sh";
+		
+		// write the file
+		File script = new File(scriptName);
+		if (script.exists() && !script.canWrite()) {
+			throw new TranslationException("Can't create script file '" + scriptName + "'; not writable.");
+		}
+		else {
+			script.getParentFile().mkdirs();
+		}
+		
+		String runServiceFile = getConfigMgr().getModelFolder() + "/" + SWIPrologTranslatorPlugin.SWI_RUN_PROLOG_SERVICE_PL;
+		String contents = "#!/bin/bash\n";
+		contents += "swipl-win -s " + runServiceFile + "\n";
+		SadlUtils su = new SadlUtils();
+		su.stringToFile(script, contents, false);
+		Process p = Runtime.getRuntime().exec("chmod 755 "+scriptName);
+		try {
+			p.waitFor();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+//		String contents = "#!/bin/bash\n";
+//		contents += "swipl-win -s " + runServiceFile + "\n";
+//		SadlUtils su = new SadlUtils();
+//		su.stringToFile(script, contents, false);
+//		Process p = Runtime.getRuntime().exec("chmod 755 "+scriptName);
+//		try {
+//			p.waitFor();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+
+		// Java exec cannot run shell commands like that. If you want to run a
+		// shell command, you need to explicitly invoke the shell; e.g.
+		// Process proc = run.exec(new String[]{"/bin/sh", "-c", "echo 5 | ./prog"});
+
+//		return getSwiPrologPath() + "swipl -s " + runServiceFile;
+		return new String[]{"/bin/sh", "-c", scriptName};
 	}
 	
 	public String getPrologCommandLine_Windows() throws TranslationException, IOException {
@@ -741,11 +886,24 @@ public class SWIPrologReasonerPlugin extends Reasoner {
 		}
 		
 		String runServiceFile = getConfigMgr().getModelFolder() + "/" + SWIPrologTranslatorPlugin.SWI_RUN_PROLOG_SERVICE_PL;
-		String contents = "start /min swipl-win.exe -s " + runServiceFile + "\nexit\n";
+		String contents = "start /min "+swiPrologAppName+" -s " + runServiceFile + "\nexit\n";
 		SadlUtils su = new SadlUtils();
 		su.stringToFile(bf, contents, false);
 		
 		return "cmd /c start /min " + batchFile;
+	}
+	
+	public void setSwiPrologAppName(String appName) {
+		if (appName==null || appName.isEmpty()) {
+			swiPrologAppName = "";
+		}
+		else {
+			swiPrologAppName = appName;
+		}
+	}
+
+	public String getSwiPrologAppName() {
+		return swiPrologAppName;
 	}
 	
 	public void setSwiPrologPath(String path) {
