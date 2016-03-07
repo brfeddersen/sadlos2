@@ -30,9 +30,15 @@ public class SWIPrologServiceInterface {
 	public boolean runPlQueryNoArgs(String url, String query, boolean defineQueryPred) throws Exception{
 		String urlParameters = "query=";
 		urlParameters += "targetVar(['" + "_DummyVar" + "'])." + "\n";
-		if (defineQueryPred)
-			urlParameters += rules + "qresult([" + true + "]) :- " + query + "." + "\n";
-		else
+		if (defineQueryPred) {
+			urlParameters += rules + "qresult([" + true + "]) :- " + query;
+			
+			if (query.endsWith(".")) {
+				urlParameters += "\n";
+			} else {
+				urlParameters += "." + "\n";		
+			}
+		} else
 			urlParameters += rules + query + "\n";
 		
 		PlServiceInterface plhttp = new PlServiceInterface();
@@ -52,9 +58,15 @@ public class SWIPrologServiceInterface {
 	public List<Hashtable> runPlQuery(String url, String query, String target, boolean defineQueryPred) throws Exception{
 		String urlParameters = "query=";
 		urlParameters += "targetVar(['" + target + "'])." + "\n";
-		if (defineQueryPred)
-			urlParameters += rules + "qresult([" + target + "]) :- " + query + "." + "\n";
-		else
+		if (defineQueryPred) {
+			urlParameters += rules + "qresult([" + target + "]) :- " + query;
+			
+			if (query.endsWith(".")) {
+				urlParameters += "\n";
+			} else {
+				urlParameters += "." + "\n";		
+			}
+		} else
 			urlParameters += rules + query + "\n";
 		
 		PlServiceInterface plhttp = new PlServiceInterface();
@@ -92,7 +104,13 @@ public class SWIPrologServiceInterface {
 				first += 1;
 			}
 			
-			urlParameters += "]) :- " + query + "." + "\n";
+			urlParameters += "]) :- " + query;
+			
+			if (query.endsWith(".")) {
+				urlParameters += "\n";
+			} else {
+				urlParameters += "." + "\n";
+			}
 		}
 		else{
 			urlParameters += rules + query + "\n";
